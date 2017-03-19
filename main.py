@@ -7,6 +7,9 @@ import numpy as np
 
 def show_image(img):
 	imgcpy = np.copy(img)
+	imgcpy *= 128
+	imgcpy += 128
+	imgcpy = imgcpy.astype('int')
 	imgcpy = np.swapaxes(imgcpy,0,2)
 	imgcpy = np.swapaxes(imgcpy,0,1)
 	plt.imshow(imgcpy)
@@ -24,7 +27,7 @@ def cyclic(value, lb, ub):
 
 def top_k_predicitons(model, X, k):
 	proba = model.predict_proba(X)
-	labels = np.argsort(X, axis=1)
+	labels = np.argsort(proba, axis=1)
 	selected_labels = (labels[:,:k])[0]
 	return selected_labels
 
@@ -89,6 +92,17 @@ def locsearchadv(model, img, p, r, d, t, k, R, label):
 
 
 if __name__ == "__main__":
-	model = load_model(sys.argv[1])
-	image = np.load(sys.argv[2])
-	print(locsearchadv(model, image, p=1, r=1, d=3, t=10, k=2, R=4, label=0))
+	try:
+		model = load_model(sys.argv[1])
+		image = np.load(sys.argv[2])
+	except:
+		print "python " + sys.argv[1] + " <model.h5> <image.npy>"
+		exit(-1)
+	try:
+		label = int(sys.argv[2].split('-')[1].split('.')[0])
+	except:
+		print "Imagename not in specified (auto-generated) format"
+		exit(-1)
+	if image.shape[1] != 3:
+		image = np.transpose(image, (2,0,1))
+	print(locsearchadv(model, image, p=1, r=1, d=3, t=10, k=2, R=4, label=label))
