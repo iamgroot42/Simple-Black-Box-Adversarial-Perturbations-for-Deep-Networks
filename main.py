@@ -1,8 +1,8 @@
 import keras
 from keras.models import load_model
-import matplotlib.pyplot as plt
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def show_image(img):
@@ -51,7 +51,7 @@ def randadv(model, img, label, p, U):
 	return float(critical) / U
 
 
-def locsearchadv(model, img, p, r, d, t, k, R, label):
+def locsearchadv(model, img, p, r, d, t, k, R, label,  show=False):
 	dim1, dim2 = image.shape[1], image.shape[2]
 	num_pixels = int(dim1*dim2*0.1)
 	PX, PY = np.random.choice(range(int(dim1)),num_pixels), np.random.choice(range(int(dim2)),num_pixels)
@@ -85,7 +85,8 @@ def locsearchadv(model, img, p, r, d, t, k, R, label):
 						if y_co > 0 and y_co < I.shape[2]:
 							PX_.append(x_co)
 							PY_.append(y_co)
-		show_image(I)
+		if show:
+			show_image(I)
 		PX, PY = np.array(PX_), np.array(PY_)
 		i += 1
 	return (False, -1)

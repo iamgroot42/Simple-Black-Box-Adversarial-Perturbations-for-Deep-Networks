@@ -32,8 +32,13 @@ def find_good_image(model, X, y):
 	rand_indices = np.random.shuffle(np.arange(len(y)))
 	X_shuff, y_shuff = X[rand_indices], y[rand_indices]
 	y_ = model.predict(X)
+	skip=0
 	for i in range(len(y)):
 		if y[i] == np.argmax(y_[i]):
+			if skip==0:
+				skip += 1
+				continue
+			print "Found a good image!"
 			return image_format(X[i]), np.argmax(y_[i])
 
 
