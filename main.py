@@ -9,7 +9,7 @@ def show_image(img):
 	imgcpy = np.copy(img)
 	imgcpy *= 128
 	imgcpy += 128
-	imgcpy = imgcpy.astype('int')
+	imgcpy = imgcpy.astype('uint8')
 	imgcpy = np.swapaxes(imgcpy,0,2)
 	imgcpy = np.swapaxes(imgcpy,0,1)
 	plt.imshow(imgcpy)
