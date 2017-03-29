@@ -52,7 +52,7 @@ def randadv(model, img, label, p, U):
 
 
 def locsearchadv(model, img, p, r, d, t, k, R, label, show=False):
-	dim1, dim2 = image.shape[1], image.shape[2]
+	dim1, dim2 = img.shape[1], img.shape[2]
 	num_pixels = int(dim1*dim2*0.1)
 	PX, PY = np.random.choice(range(int(dim1)),num_pixels), np.random.choice(range(int(dim2)),num_pixels)
 	i = 1
@@ -69,7 +69,7 @@ def locsearchadv(model, img, p, r, d, t, k, R, label, show=False):
 		PY = (PY[sorted_L])[:t]
 		# Generation of the perturbed image I
 		for j in range(len(PX)):
-			I = perturbed(I, PX[j], PY[j], r)	
+			I = perturbed(I, PX[j], PY[j], r)
 		# Check whether the perturbed image I is an adversarial image
 		predictions = top_k_predicitons(model, I.reshape(1, 3, 32, 32), k)
 		if label not in predictions:
@@ -93,7 +93,6 @@ def locsearchadv(model, img, p, r, d, t, k, R, label, show=False):
 
 
 def perturb_images(model, images, labels, p, r, d, t, k, R):
-	print("5% done",file=sys.stderr)
 	n_images = len(labels)
 	success_count = 0.0
 	perturbed_images = []
@@ -106,7 +105,7 @@ def perturb_images(model, images, labels, p, r, d, t, k, R):
 			perturbed_images.append(noisy_image)
 			perturbed_labels.append(new_label)
 			success_count += 1.0
-	print("%d images were successfully perturbed",success_count/n_images)
+	print("%f percent images were successfully perturbed"%(100*success_count/n_images))
 	return np.array(perturbed_images), np.array(perturbed_labels)
 
 
