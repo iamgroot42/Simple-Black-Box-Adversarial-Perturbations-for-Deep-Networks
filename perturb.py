@@ -26,7 +26,7 @@ def cyclic(value, lb, ub):
 
 
 def top_k_predicitons(model, X, k):
-	proba = model.predict_proba(X)
+	proba = model.predict_proba(X, verbose=0)
 	labels = np.argsort(proba, axis=1)
 	selected_labels = (labels[:,:k])[0]
 	return selected_labels
@@ -97,6 +97,7 @@ def perturb_images(model, images, labels, p, r, d, t, k, R):
 	success_count = 0.0
 	perturbed_images = []
 	perturbed_labels = []
+	valid_labels = []
 	for i in range(n_images):
 		image = images[i]
 		label = np.argmax(labels[i])
@@ -105,8 +106,9 @@ def perturb_images(model, images, labels, p, r, d, t, k, R):
 			perturbed_images.append(noisy_image)
 			perturbed_labels.append(new_label)
 			success_count += 1.0
-	print("%f percent images were successfully perturbed"%(100*success_count/n_images))
-	return np.array(perturbed_images), np.array(perturbed_labels)
+			valid_labels.append(i)
+	print("\n%f percent images were successfully perturbed"%(100*success_count/n_images))
+	return np.array(perturbed_images), np.array(perturbed_labels), valid_labels
 
 
 if __name__ == "__main__":
