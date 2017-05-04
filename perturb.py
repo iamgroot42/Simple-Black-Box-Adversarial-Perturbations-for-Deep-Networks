@@ -73,7 +73,7 @@ def locsearchadv(model, img, p, r, d, t, k, R, label, show=False):
 		# Check whether the perturbed image I is an adversarial image
 		predictions = top_k_predicitons(model, I.reshape(1, 3, 32, 32), k)
 		if label not in predictions:
-			return (True, label, I)
+			return (i, True, label, I)
 		# Update a neighborhood of pixel locations for the next round
 		PX_ , PY_ = [], []
 		for j in range(len(PX)):
@@ -89,26 +89,28 @@ def locsearchadv(model, img, p, r, d, t, k, R, label, show=False):
 			show_image(I)
 		PX, PY = np.array(PX_), np.array(PY_)
 		i += 1
-	return (False, -1, None)
+	return (i, False, -1, None)
 
 
 def perturb_images(model, images, labels, p, r, d, t, k, R):
 	n_images = len(labels)
 	success_count = 0.0
+	total_count = 0
 	perturbed_images = []
 	perturbed_labels = []
 	valid_labels = []
 	for i in range(n_images):
 		image = images[i]
 		label = np.argmax(labels[i])
-		success, new_label, noisy_image = locsearchadv(model, image, p, r, d, t, k, R, label)
+		count, success, new_label, noisy_image = locsearchadv(model, image, p, r, d, t, k, R, label)
+		total_count += count
 		if success:
 			perturbed_images.append(noisy_image)
 			perturbed_labels.append(new_label)
 			success_count += 1.0
 			valid_labels.append(i)
 	print("\n%f percent images were successfully perturbed"%(100*success_count/n_images))
-	return np.array(perturbed_images), np.array(perturbed_labels), valid_labels
+	return np.array(perturbed_images), np.array(perturbed_labels), valid_labels, total_count
 
 
 if __name__ == "__main__":
